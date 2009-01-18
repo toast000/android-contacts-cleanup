@@ -122,7 +122,7 @@ public class Preview extends Activity implements OnClickListener,
 		addMenuItem(menu, MENU_APPLY, R.string.button_apply,
 				android.R.drawable.ic_menu_save);
 		addMenuItem(menu, MENU_CANCEL, R.string.button_cancel,
-				android.R.drawable.ic_menu_delete);
+				android.R.drawable.ic_menu_close_clear_cancel);
 		return true;
 	}
 
