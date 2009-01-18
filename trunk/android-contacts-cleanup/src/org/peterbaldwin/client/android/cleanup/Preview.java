@@ -17,6 +17,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.BaseColumns;
 import android.provider.Contacts;
+import android.provider.Contacts.PhonesColumns;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -28,6 +31,10 @@ import android.widget.ListView;
  * TODO: generalize to non-phone fields
  * 
  * TODO: move all strings to strings.xml
+ * 
+ * TODO: show contact name to help guess area code
+ * 
+ * TODO: debug missing button issue
  */
 public class Preview extends Activity implements OnClickListener,
 		OnCancelListener, Runnable {
@@ -35,11 +42,16 @@ public class Preview extends Activity implements OnClickListener,
 	private static final String[] PROJECTION = { Contacts.Phones._ID,
 			Contacts.PhonesColumns.NUMBER };
 
+	private static final String CHARACTERS = "+-. ()";
+
 	private static final String EDITS = "edits";
 
 	static final int HANDLE_ADAPTER_READY = 1;
 	static final int HANDLE_UPDATE_COMPLETE = 2;
 	static final int HANDLE_ALL_UPDATES_COMPLETE = 3;
+
+	private static final int MENU_APPLY = 1;
+	private static final int MENU_CANCEL = 2;
 
 	private String mCountryCode;
 	private String mAreaCode;
@@ -85,6 +97,35 @@ public class Preview extends Activity implements OnClickListener,
 		}
 	}
 
+	private static void addMenuItem(Menu menu, int menuId, int resId,
+			int resIconId) {
+		menu.add(Menu.NONE, menuId, Menu.NONE, resId).setIcon(resIconId);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case MENU_APPLY:
+			apply();
+			return true;
+		case MENU_CANCEL:
+			finish();
+			return true;
+
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		addMenuItem(menu, MENU_APPLY, R.string.button_apply,
+				android.R.drawable.ic_menu_save);
+		addMenuItem(menu, MENU_CANCEL, R.string.button_cancel,
+				android.R.drawable.ic_menu_delete);
+		return true;
+	}
+
 	void setListAdapter(EditListAdapter adapter) {
 		if (adapter.isEmpty()) {
 			Context context = this;
@@ -116,7 +157,10 @@ public class Preview extends Activity implements OnClickListener,
 			Uri uri = Contacts.Phones.CONTENT_URI;
 			String selection = null;
 			String[] selectionArgs = null;
-			String sortOrder = null;
+			
+			// Show shorter items first because they will be modified most.
+			String sortOrder = "LENGTH(" + PhonesColumns.NUMBER + ") ASC";
+			
 			Cursor cursor = managedQuery(uri, PROJECTION, selection,
 					selectionArgs, sortOrder);
 			int idColumn = cursor.getColumnIndex(BaseColumns._ID);
@@ -176,6 +220,9 @@ public class Preview extends Activity implements OnClickListener,
 			char c = value.charAt(i);
 			if (Character.isDigit(c)) {
 				buffer.append(c);
+			} else if (CHARACTERS.indexOf(c) == -1) {
+				// Unexpected character
+				return value;
 			}
 		}
 
