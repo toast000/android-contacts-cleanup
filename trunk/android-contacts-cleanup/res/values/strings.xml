@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">Contacts Clean-up</string>
+	<string name="pref_area_code">area_code</string>
+	<string name="pref_country_code">country_code</string>
+	<string name="label_area_code">Area Code</string>
+	<string name="label_country_code">Country Code</string>
+	<string name="label_original">Original</string>
+	<string name="label_new">New</string>
+	<string name="button_preview">Preview</string>
+	<string name="button_apply">Apply</string>
+	<string name="button_cancel">Cancel</string>
+	<string name="data_loss_warning">It is strongly recommended that you make a back-up of your contacts using Gmail's 'Export' feature before running this application.</string>
+</resources>
