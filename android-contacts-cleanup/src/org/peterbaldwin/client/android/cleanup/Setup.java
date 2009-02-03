@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 /**
  * An activity to configure and initiate a clean-up operation.
@@ -23,20 +25,33 @@ public class Setup extends Activity implements OnClickListener {
 
 	private static final int PREFERENCES_MODE = MODE_PRIVATE;
 
+	private RadioGroup mGroupFormat;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.setup);
 
-		loadPreferences();
+		mGroupFormat = (RadioGroup) findViewById(R.id.group_format);
 
 		Button button = (Button) findViewById(R.id.PreviewButton);
 		button.setOnClickListener(this);
+
+		RadioButton radioButton = (RadioButton) findViewById(R.id.format_space);
+		radioButton.toggle();
+
+		loadPreferences();
 	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
+		savePreferences();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
 		savePreferences();
 	}
 
@@ -46,6 +61,17 @@ public class Setup extends Activity implements OnClickListener {
 				DEFAULT_COUNTRY_CODE);
 		setView(preferences, R.string.pref_area_code, R.id.AreaCodeText,
 				DEFAULT_AREA_CODE);
+
+		String format = getPreference(preferences, R.string.pref_format, null);
+		if (format != null) {
+			for (int i = 0; i < mGroupFormat.getChildCount(); i++) {
+				RadioButton button = (RadioButton) mGroupFormat.getChildAt(i);
+				if (format.equals(getRadioButtonText(button))) {
+					button.toggle();
+					break;
+				}
+			}
+		}
 	}
 
 	private void setView(SharedPreferences preferences, int prefId, int viewId,
@@ -55,10 +81,9 @@ public class Setup extends Activity implements OnClickListener {
 		editText.setText(value);
 	}
 
-	private void putExtra(Intent intent, String key, int editTextId) {
+	private String getEditText(int editTextId) {
 		EditText editText = (EditText) findViewById(editTextId);
-		String value = editText.getText().toString();
-		intent.putExtra(key, value);
+		return editText.getText().toString();
 	}
 
 	private String getPreference(SharedPreferences preferences, int resId,
@@ -67,11 +92,28 @@ public class Setup extends Activity implements OnClickListener {
 		return preferences.getString(key, defValue);
 	}
 
+	private String getRadioButtonText(RadioButton button) {
+		return button.getText().toString();
+	}
+
+	private String getRadioButtonText(int viewId) {
+		RadioButton button = (RadioButton) findViewById(viewId);
+		return getRadioButtonText(button);
+	}
+
+	private String getPreferenceValue(int viewId) {
+		if (viewId == R.id.group_format) {
+			int buttonId = mGroupFormat.getCheckedRadioButtonId();
+			return getRadioButtonText(buttonId);
+		} else {
+			return getEditText(viewId);
+		}
+	}
+
 	private void putPreference(SharedPreferences.Editor editor, int viewId,
 			int resId) {
 		String key = getString(resId);
-		EditText editText = (EditText) findViewById(viewId);
-		String value = editText.getText().toString();
+		String value = getPreferenceValue(viewId);
 		editor.putString(key, value);
 	}
 
@@ -80,18 +122,43 @@ public class Setup extends Activity implements OnClickListener {
 		SharedPreferences.Editor editor = preferences.edit();
 		putPreference(editor, R.id.CountryCodeText, R.string.pref_country_code);
 		putPreference(editor, R.id.AreaCodeText, R.string.pref_area_code);
+		putPreference(editor, R.id.group_format, R.string.pref_format);
 		editor.commit();
+	}
+
+	private String getSeparator() {
+		RadioGroup group = (RadioGroup) findViewById(R.id.group_format);
+		int id = group.getCheckedRadioButtonId();
+		switch (id) {
+		case R.id.format_dash:
+			return "-";
+		case R.id.format_dot:
+			return ".";
+		case R.id.format_nopunc:
+			return "";
+		case R.id.format_space:
+			return " ";
+		default:
+			RadioButton button = (RadioButton) findViewById(id);
+			throw new RuntimeException("unexpected format: " + button.getText());
+		}
 	}
 
 	@Override
 	public void onClick(View v) {
 		Context context = getApplicationContext();
 
-		savePreferences();
-
 		Intent intent = new Intent(context, Preview.class);
-		putExtra(intent, Extras.COUNTRY_CODE, R.id.CountryCodeText);
-		putExtra(intent, Extras.AREA_CODE, R.id.AreaCodeText);
+
+		String countryCode = getEditText(R.id.CountryCodeText);
+		intent.putExtra(Preview.EXTRA_COUNTRY_CODE, countryCode);
+
+		String areaCode = getEditText(R.id.AreaCodeText);
+		intent.putExtra(Preview.EXTRA_AREA_CODE, areaCode);
+
+		String separator = getSeparator();
+		intent.putExtra(Preview.EXTRA_SEPARATOR, separator);
+
 		startActivity(intent);
 		finish();
 	}

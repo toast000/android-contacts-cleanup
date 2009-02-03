@@ -23,8 +23,26 @@
 				<EditText android:id="@+id/AreaCodeText"
 					android:layout_width="wrap_content" android:layout_height="wrap_content" />
 			</TableRow>
+			<TextView android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:text="@string/label_format" />
+			<RadioGroup android:id="@+id/group_format"
+				android:layout_width="wrap_content" android:layout_height="wrap_content">
+				<RadioButton android:id="@+id/format_space"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="@string/format_space" />
+				<RadioButton android:id="@+id/format_dash"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="@string/format_dash" />
+				<RadioButton android:id="@+id/format_dot"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="@string/format_dot" />
+				<RadioButton android:id="@+id/format_nopunc"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="@string/format_nopunc" />
+			</RadioGroup>
 		</TableLayout>
 		<Button android:id="@+id/PreviewButton" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:text="@string/button_preview" android:layout_gravity="center"/>
+			android:layout_height="wrap_content" android:text="@string/button_preview"
+			android:layout_gravity="center" />
 	</LinearLayout>
 </ScrollView>
