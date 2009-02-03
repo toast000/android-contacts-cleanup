@@ -9,7 +9,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.DialogInterface.OnCancelListener;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,6 +36,9 @@ import android.widget.ListView;
 public class Preview extends Activity implements OnClickListener,
 		DialogInterface.OnClickListener, DialogInterface.OnCancelListener,
 		Runnable {
+	public static final String EXTRA_COUNTRY_CODE = "country_code";
+	public static final String EXTRA_AREA_CODE = "area_code";
+	public static final String EXTRA_SEPARATOR = "separator";
 
 	private static final String[] PROJECTION = { Contacts.Phones._ID,
 			Contacts.PhonesColumns.NUMBER };
@@ -51,6 +53,7 @@ public class Preview extends Activity implements OnClickListener,
 
 	private String mCountryCode;
 	private String mAreaCode;
+	private String mSeparator;
 
 	private ProgressDialog mProgressDialog;
 
@@ -81,8 +84,9 @@ public class Preview extends Activity implements OnClickListener,
 		super.onCreate(savedInstanceState);
 
 		Intent intent = getIntent();
-		mCountryCode = intent.getStringExtra(Extras.COUNTRY_CODE);
-		mAreaCode = intent.getStringExtra(Extras.AREA_CODE);
+		mCountryCode = intent.getStringExtra(EXTRA_COUNTRY_CODE);
+		mAreaCode = intent.getStringExtra(EXTRA_AREA_CODE);
+		mSeparator = intent.getStringExtra(EXTRA_SEPARATOR);
 		if (savedInstanceState != null && savedInstanceState.containsKey(EDITS)) {
 			Context context = this;
 			Edit[] array = (Edit[]) savedInstanceState
@@ -171,11 +175,17 @@ public class Preview extends Activity implements OnClickListener,
 	/**
 	 * Formats the given phone number as <code>+XX YYY ZZZ ZZZZ</code>, where
 	 * <code>XX</code> is the country code, <code>YYY</code> is the area code,
-	 * and <code>ZZZ ZZZZ</code> is the local phone number.
+	 * <code>ZZZ ZZZZ</code> is the local phone number, and the punctuation can
+	 * be changed with {@link #mSeparator}.
 	 * 
-	 * Reference: <a href=
+	 * Reference:
+	 * <ul>
+	 * <li><a href=
 	 * "http://en.wikipedia.org/wiki/Telephone_numbering_plan#Country_code">
-	 * Telephone numbering plan</a>
+	 * Telephone numbering plan</a></li>
+	 * <li><a href="http://www.freelabs.com/~whitis/date_phone_formats.html">
+	 * Proper Formats for Dates and Phone Numbers</a></li>
+	 * </ul>
 	 * 
 	 * @param value
 	 *            the phone number to clean-up.
@@ -189,7 +199,8 @@ public class Preview extends Activity implements OnClickListener,
 			if (Character.isDigit(c)) {
 				buffer.append(c);
 			} else if (CHARACTERS.indexOf(c) == -1) {
-				// Unexpected character
+				// Don't format the number if it contains a character that is
+				// neither a number nor punctuation.
 				return value;
 			}
 		}
@@ -205,16 +216,18 @@ public class Preview extends Activity implements OnClickListener,
 		if (buffer.length() > 10) {
 			buffer.insert(0, '+');
 
-			// Insert a space before the last 4 digits.
-			buffer.insert(buffer.length() - 4, ' ');
+			// TODO: Support non-US grouping
+			int len = mSeparator.length();
+			if (len != 0) {
+				// Insert a separator before the last 4 digits.
+				buffer.insert(buffer.length() - 4, mSeparator);
 
-			// Insert a space before the last 7 digits
-			// (+1 for the space that was inserted previously).
-			buffer.insert(buffer.length() - (7 + 1), ' ');
+				// Insert a separator before the last 7 digits
+				buffer.insert(buffer.length() - (7 + len), mSeparator);
 
-			// Insert a space before the last 10 digits
-			// (+2 for the spaces that were inserted previously).
-			buffer.insert(buffer.length() - (10 + 2), ' ');
+				// Insert a separator before the last 10 digits
+				buffer.insert(buffer.length() - (10 + len * 2), mSeparator);
+			}
 		} else {
 			// Unexpected number of digits; abort all formatting.
 			return value;
