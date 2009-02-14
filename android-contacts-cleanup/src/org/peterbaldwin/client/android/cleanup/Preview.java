@@ -118,6 +118,8 @@ public class Preview extends Activity implements OnClickListener,
 			cancelButton.setOnClickListener(this);
 
 			mListView = (ListView) findViewById(R.id.PreviewList);
+			mListView.setItemsCanFocus(true);
+			mListView.setSelector(android.R.drawable.list_selector_background);
 			mListView.setAdapter(adapter);
 		}
 	}
