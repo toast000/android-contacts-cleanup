@@ -1,12 +1,13 @@
 package org.peterbaldwin.client.android.cleanup;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -18,7 +19,8 @@ import android.widget.RadioGroup;
  * TODO: store values in preferences so that activity can be repeated more
  * easily.
  */
-public class Setup extends Activity implements OnClickListener {
+public class Setup extends Activity implements View.OnClickListener,
+		DialogInterface.OnClickListener {
 
 	private static final String DEFAULT_COUNTRY_CODE = "1";
 	private static final String DEFAULT_AREA_CODE = "";
@@ -143,23 +145,53 @@ public class Setup extends Activity implements OnClickListener {
 			throw new RuntimeException("unexpected format: " + button.getText());
 		}
 	}
+	
+	private static boolean isNumberOfLength(int n, String value) {
+		if (value.length() == n) {
+			for (int i = 0; i < n; i++) {
+				char c = value.charAt(i);
+				if (!Character.isDigit(c)) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	private void showError(int resId) {
+		String message = getString(resId);
+		Context context = this;
+		AlertDialog.Builder builder = new AlertDialog.Builder(context);
+		builder.setMessage(message);
+		builder.setPositiveButton(android.R.string.ok, this);
+		AlertDialog dialog = builder.create();
+		dialog.show();
+	}
 
 	@Override
 	public void onClick(View v) {
-		Context context = getApplicationContext();
-
-		Intent intent = new Intent(context, Preview.class);
-
 		String countryCode = getEditText(R.id.CountryCodeText);
-		intent.putExtra(Preview.EXTRA_COUNTRY_CODE, countryCode);
-
 		String areaCode = getEditText(R.id.AreaCodeText);
-		intent.putExtra(Preview.EXTRA_AREA_CODE, areaCode);
-
 		String separator = getSeparator();
-		intent.putExtra(Preview.EXTRA_SEPARATOR, separator);
 
-		startActivity(intent);
-		finish();
+		if (!isNumberOfLength(1, countryCode)) {
+			showError(R.string.error_invalid_country_code);
+		} else if (!isNumberOfLength(3, areaCode)) {
+			showError(R.string.error_invalid_area_code);
+		} else {
+			Context context = getApplicationContext();
+			Intent intent = new Intent(context, Preview.class);
+			intent.putExtra(Preview.EXTRA_COUNTRY_CODE, countryCode);
+			intent.putExtra(Preview.EXTRA_AREA_CODE, areaCode);
+			intent.putExtra(Preview.EXTRA_SEPARATOR, separator);
+			startActivity(intent);
+			finish();
+		}
+	}
+
+	@Override
+	public void onClick(DialogInterface dialog, int which) {
+		// Pass
 	}
 }

@@ -16,5 +16,14 @@
 	<string name="button_preview">Preview</string>
 	<string name="button_apply">Apply</string>
 	<string name="button_cancel">Cancel</string>
-	<string name="data_loss_warning">It is strongly recommended that you make a back-up of your contacts using the Export feature in Gmail before running this application.</string>
+	<string name="data_loss_warning">
+		WARNING! This application makes large edits to your
+		contacts that cannot easily be undone. In some cases, there may be
+		errors synchronizing these changes with your Gmail contacts, which may
+		result in duplicate phone numbers or other types of errors. It is
+		strongly recommended that you make a back-up of your contacts using
+		the Export feature in Gmail before running this application.
+	</string>
+	<string name="error_invalid_country_code">Please enter a 1-digit country code.</string>
+	<string name="error_invalid_area_code">Please enter a 3-digit area code.</string>
 </resources>
