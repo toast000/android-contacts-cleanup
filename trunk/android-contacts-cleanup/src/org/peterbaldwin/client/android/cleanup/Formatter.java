@@ -66,7 +66,7 @@ public class Formatter {
 		if (buffer.length() > 10) {
 			buffer.insert(0, '+');
 
-			// TODO: Support non-US grouping
+			// TODO: Support non-US grouping (http://www.wtng.info/)
 			int len = mSeparator.length();
 			if (len != 0) {
 				// Insert a separator before the last 4 digits.
