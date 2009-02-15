@@ -175,9 +175,7 @@ public class Setup extends Activity implements View.OnClickListener,
 		String areaCode = getEditText(R.id.AreaCodeText);
 		String separator = getSeparator();
 
-		if (!isNumberOfLength(1, countryCode)) {
-			showError(R.string.error_invalid_country_code);
-		} else if (!isNumberOfLength(3, areaCode)) {
+		if (countryCode.equals("1") && !isNumberOfLength(3, areaCode)) {
 			showError(R.string.error_invalid_area_code);
 		} else {
 			Context context = getApplicationContext();
