@@ -43,17 +43,13 @@ public class Preview extends Activity implements OnClickListener,
 	private static final String[] PROJECTION = { Contacts.Phones._ID,
 			Contacts.PhonesColumns.NUMBER };
 
-	private static final String CHARACTERS = "+-. ()";
-
 	private static final String EDITS = "edits";
 
 	static final int HANDLE_ADAPTER_READY = 1;
 	static final int HANDLE_UPDATE_COMPLETE = 2;
 	static final int HANDLE_ALL_UPDATES_COMPLETE = 3;
-
-	private String mCountryCode;
-	private String mAreaCode;
-	private String mSeparator;
+	
+	private Formatter mFormatter;
 
 	private ProgressDialog mProgressDialog;
 
@@ -84,9 +80,12 @@ public class Preview extends Activity implements OnClickListener,
 		super.onCreate(savedInstanceState);
 
 		Intent intent = getIntent();
-		mCountryCode = intent.getStringExtra(EXTRA_COUNTRY_CODE);
-		mAreaCode = intent.getStringExtra(EXTRA_AREA_CODE);
-		mSeparator = intent.getStringExtra(EXTRA_SEPARATOR);
+		String countryCode = intent.getStringExtra(EXTRA_COUNTRY_CODE);
+		String areaCode = intent.getStringExtra(EXTRA_AREA_CODE);
+		String separator = intent.getStringExtra(EXTRA_SEPARATOR);
+
+		mFormatter = new Formatter(countryCode, areaCode, separator);
+
 		if (savedInstanceState != null && savedInstanceState.containsKey(EDITS)) {
 			Context context = this;
 			Edit[] array = (Edit[]) savedInstanceState
@@ -147,7 +146,7 @@ public class Preview extends Activity implements OnClickListener,
 					Edit edit = new Edit();
 					edit.mId = cursor.getLong(idColumn);
 					edit.mOriginalValue = cursor.getString(numberColumn);
-					edit.mNewValue = cleanup(edit.mOriginalValue);
+					edit.mNewValue = mFormatter.cleanup(edit.mOriginalValue);
 					if (!edit.mNewValue.equals(edit.mOriginalValue)) {
 						adapter.add(edit);
 					}
@@ -172,70 +171,6 @@ public class Preview extends Activity implements OnClickListener,
 			}
 			mHandler.sendEmptyMessage(HANDLE_ALL_UPDATES_COMPLETE);
 		}
-	}
-
-	/**
-	 * Formats the given phone number as <code>+XX YYY ZZZ ZZZZ</code>, where
-	 * <code>XX</code> is the country code, <code>YYY</code> is the area code,
-	 * <code>ZZZ ZZZZ</code> is the local phone number, and the punctuation can
-	 * be changed with {@link #mSeparator}.
-	 * 
-	 * Reference:
-	 * <ul>
-	 * <li><a href=
-	 * "http://en.wikipedia.org/wiki/Telephone_numbering_plan#Country_code">
-	 * Telephone numbering plan</a></li>
-	 * <li><a href="http://www.freelabs.com/~whitis/date_phone_formats.html">
-	 * Proper Formats for Dates and Phone Numbers</a></li>
-	 * </ul>
-	 * 
-	 * @param value
-	 *            the phone number to clean-up.
-	 * @return the formatted phone number.
-	 */
-	private String cleanup(final String value) {
-		StringBuilder buffer = new StringBuilder(16);
-
-		for (int i = 0, n = value.length(); i < n; i++) {
-			char c = value.charAt(i);
-			if (Character.isDigit(c)) {
-				buffer.append(c);
-			} else if (CHARACTERS.indexOf(c) == -1) {
-				// Don't format the number if it contains a character that is
-				// neither a number nor punctuation.
-				return value;
-			}
-		}
-
-		if (buffer.length() == 7) {
-			buffer.insert(0, mAreaCode);
-		}
-
-		if (buffer.length() == 10) {
-			buffer.insert(0, mCountryCode);
-		}
-
-		if (buffer.length() > 10) {
-			buffer.insert(0, '+');
-
-			// TODO: Support non-US grouping
-			int len = mSeparator.length();
-			if (len != 0) {
-				// Insert a separator before the last 4 digits.
-				buffer.insert(buffer.length() - 4, mSeparator);
-
-				// Insert a separator before the last 7 digits
-				buffer.insert(buffer.length() - (7 + len), mSeparator);
-
-				// Insert a separator before the last 10 digits
-				buffer.insert(buffer.length() - (10 + len * 2), mSeparator);
-			}
-		} else {
-			// Unexpected number of digits; abort all formatting.
-			return value;
-		}
-
-		return buffer.toString();
 	}
 
 	private void loadContacts() {
