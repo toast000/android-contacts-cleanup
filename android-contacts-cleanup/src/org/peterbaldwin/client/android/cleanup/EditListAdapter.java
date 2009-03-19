@@ -19,7 +19,8 @@ public class EditListAdapter extends ArrayAdapter<Edit> {
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
-		View view = super.getView(position, convertView, parent);
+		// Set convertView to null to avoid reuse
+		View view = super.getView(position, null, parent);
 
 		EditText editText = (EditText) view.findViewById(R.id.NewValue);
 		Edit edit = getItem(position);
