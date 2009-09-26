@@ -7,9 +7,10 @@ import android.os.Parcelable;
  * A class describing a field edit.
  */
 public class Edit implements Parcelable {
-	public long mId;
+	public long mPhoneId;
 	public String mOriginalValue;
 	public String mNewValue;
+	public String mDisplayName;
 
 	public static final Parcelable.Creator<Edit> CREATOR = new Parcelable.Creator<Edit>() {
 		public Edit createFromParcel(Parcel in) {
@@ -20,14 +21,15 @@ public class Edit implements Parcelable {
 			return new Edit[size];
 		}
 	};
-	
+
 	public Edit() {
 	}
 
 	private Edit(Parcel in) {
-		mId = in.readLong();
+		mPhoneId = in.readLong();
 		mOriginalValue = in.readString();
 		mNewValue = in.readString();
+		mDisplayName = in.readString();
 	}
 
 	@Override
@@ -42,8 +44,9 @@ public class Edit implements Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeLong(mId);
+		dest.writeLong(mPhoneId);
 		dest.writeString(mOriginalValue);
 		dest.writeString(mNewValue);
+		dest.writeString(mDisplayName);
 	}
 }
