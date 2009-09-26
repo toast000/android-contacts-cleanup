@@ -10,13 +10,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.CursorJoiner;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.BaseColumns;
 import android.provider.Contacts;
-import android.provider.Contacts.PhonesColumns;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -40,15 +40,12 @@ public class Preview extends Activity implements OnClickListener,
 	public static final String EXTRA_AREA_CODE = "area_code";
 	public static final String EXTRA_SEPARATOR = "separator";
 
-	private static final String[] PROJECTION = { Contacts.Phones._ID,
-			Contacts.PhonesColumns.NUMBER };
-
 	private static final String EDITS = "edits";
 
 	static final int HANDLE_ADAPTER_READY = 1;
 	static final int HANDLE_UPDATE_COMPLETE = 2;
 	static final int HANDLE_ALL_UPDATES_COMPLETE = 3;
-	
+
 	private Formatter mFormatter;
 
 	private ProgressDialog mProgressDialog;
@@ -127,31 +124,50 @@ public class Preview extends Activity implements OnClickListener,
 	public void run() {
 		// TODO: report error on exception
 		if (mAdapter == null) {
-			Uri uri = Contacts.Phones.CONTENT_URI;
-			String selection = null;
-			String[] selectionArgs = null;
+			Cursor phoneCursor = managedQuery(Contacts.Phones.CONTENT_URI,
+					new String[] { Contacts.Phones._ID, Contacts.Phones.NUMBER,
+							Contacts.Phones.PERSON_ID }, null, null,
+					Contacts.Phones.PERSON_ID);
+			Cursor peopleCursor = managedQuery(Contacts.People.CONTENT_URI,
+					new String[] { Contacts.People._ID,
+							Contacts.People.DISPLAY_NAME }, null, null,
+					Contacts.People._ID);
 
-			// Show shorter items first because they will be modified most.
-			String sortOrder = "LENGTH(" + PhonesColumns.NUMBER + ") ASC";
+			int phoneIdColumn = phoneCursor
+					.getColumnIndexOrThrow(Contacts.Phones._ID);
+			int phoneNumberColumn = phoneCursor
+					.getColumnIndexOrThrow(Contacts.Phones.NUMBER);
+			int displayNameColumn = peopleCursor
+					.getColumnIndexOrThrow(Contacts.People.DISPLAY_NAME);
 
-			Cursor cursor = managedQuery(uri, PROJECTION, selection,
-					selectionArgs, sortOrder);
-			int idColumn = cursor.getColumnIndex(BaseColumns._ID);
-			int numberColumn = cursor.getColumnIndex(Contacts.Phones.NUMBER);
 			Context context = this;
 			EditListAdapter adapter = new EditListAdapter(context);
-			cursor.moveToFirst();
-			if (cursor.isFirst()) {
-				do {
+			CursorJoiner joiner = new CursorJoiner(phoneCursor,
+					new String[] { Contacts.Phones.PERSON_ID }, peopleCursor,
+					new String[] { Contacts.People._ID });
+			for (CursorJoiner.Result result : joiner) {
+				switch (result) {
+				case LEFT:
+					// The phone number is not associated with a person
+					break;
+				case RIGHT:
+					// The person does not have a phone number
+					break;
+				case BOTH:
 					Edit edit = new Edit();
-					edit.mId = cursor.getLong(idColumn);
-					edit.mOriginalValue = cursor.getString(numberColumn);
+					edit.mPhoneId = phoneCursor.getLong(phoneIdColumn);
+					edit.mOriginalValue = phoneCursor
+							.getString(phoneNumberColumn);
 					edit.mNewValue = mFormatter.cleanup(edit.mOriginalValue);
+					edit.mDisplayName = peopleCursor
+							.getString(displayNameColumn);
 					if (!edit.mNewValue.equals(edit.mOriginalValue)) {
 						adapter.add(edit);
 					}
-				} while (cursor.moveToNext());
+					break;
+				}
 			}
+
 			Message message = new Message();
 			message.what = HANDLE_ADAPTER_READY;
 			message.obj = adapter;
@@ -161,7 +177,7 @@ public class Preview extends Activity implements OnClickListener,
 				Edit edit = mAdapter.getItem(i);
 				ContentResolver resolver = getContentResolver();
 				Uri uri = ContentUris.withAppendedId(
-						Contacts.Phones.CONTENT_URI, edit.mId);
+						Contacts.Phones.CONTENT_URI, edit.mPhoneId);
 				ContentValues values = new ContentValues();
 				values.put(Contacts.PhonesColumns.NUMBER, edit.mNewValue);
 				String where = null;

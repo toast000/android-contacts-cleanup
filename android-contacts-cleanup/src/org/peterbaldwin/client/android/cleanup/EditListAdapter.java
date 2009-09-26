@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListAdapter;
+import android.widget.TextView;
 
 /**
  * A {@link ListAdapter} for an array of {@link Edit} objects.
@@ -14,23 +15,27 @@ import android.widget.ListAdapter;
 public class EditListAdapter extends ArrayAdapter<Edit> {
 
 	public EditListAdapter(Context context) {
-		super(context, R.layout.edit, R.id.OriginalValue);
+		super(context, R.layout.edit, R.id.original_phone);
 	}
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		// Set convertView to null to avoid reuse
 		View view = super.getView(position, null, parent);
+		TextView textDisplayName = (TextView) view
+				.findViewById(R.id.display_name);
+		TextView textOriginalPhone = (TextView) view
+				.findViewById(R.id.original_phone);
+		EditText editNewPhone = (EditText) view.findViewById(R.id.new_phone);
 
-		EditText editText = (EditText) view.findViewById(R.id.NewValue);
 		Edit edit = getItem(position);
-
-		// Set value
-		editText.setText(edit.mNewValue);
+		textDisplayName.setText(edit.mDisplayName);
+		textOriginalPhone.setText(edit.mOriginalValue);
+		editNewPhone.setText(edit.mNewValue);
 
 		// Watch for changes
 		TextWatcher watcher = new EditTextWatcher(edit);
-		editText.addTextChangedListener(watcher);
+		editNewPhone.addTextChangedListener(watcher);
 
 		return view;
 	}
