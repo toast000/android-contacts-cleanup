@@ -27,12 +27,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.CursorJoiner;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.Contacts;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -140,49 +139,33 @@ public class PreviewActivity extends Activity implements OnClickListener,
 	public void run() {
 		// TODO: report error on exception
 		if (mAdapter == null) {
-			Cursor phoneCursor = managedQuery(Contacts.Phones.CONTENT_URI,
-					new String[] { Contacts.Phones._ID, Contacts.Phones.NUMBER,
-							Contacts.Phones.PERSON_ID }, null, null,
-					Contacts.Phones.PERSON_ID);
-			Cursor peopleCursor = managedQuery(Contacts.People.CONTENT_URI,
-					new String[] { Contacts.People._ID,
-							Contacts.People.DISPLAY_NAME }, null, null,
-					Contacts.People._ID);
+			Uri uri = Phone.CONTENT_URI;
+			String[] projection = { Phone._ID, Phone.NUMBER, Phone.DISPLAY_NAME };
+			String selection = null;
+			String[] selectionArgs = null;
+			String sortOrder = Phone.DISPLAY_NAME;
+			Cursor cursor = managedQuery(uri, projection, selection,
+					selectionArgs, sortOrder);
 
-			int phoneIdColumn = phoneCursor
-					.getColumnIndexOrThrow(Contacts.Phones._ID);
-			int phoneNumberColumn = phoneCursor
-					.getColumnIndexOrThrow(Contacts.Phones.NUMBER);
-			int displayNameColumn = peopleCursor
-					.getColumnIndexOrThrow(Contacts.People.DISPLAY_NAME);
+			int phoneIdColumn = cursor.getColumnIndexOrThrow(Phone._ID);
+			int phoneNumberColumn = cursor.getColumnIndexOrThrow(Phone.NUMBER);
+			int displayNameColumn = cursor.getColumnIndexOrThrow(Phone.DISPLAY_NAME);
 
 			Context context = this;
 			EditListAdapter adapter = new EditListAdapter(context);
-			CursorJoiner joiner = new CursorJoiner(phoneCursor,
-					new String[] { Contacts.Phones.PERSON_ID }, peopleCursor,
-					new String[] { Contacts.People._ID });
-			for (CursorJoiner.Result result : joiner) {
-				switch (result) {
-				case LEFT:
-					// The phone number is not associated with a person
-					break;
-				case RIGHT:
-					// The person does not have a phone number
-					break;
-				case BOTH:
+			if (cursor.moveToFirst()) {
+				do {
 					Edit edit = new Edit();
-					edit.mPhoneId = phoneCursor.getLong(phoneIdColumn);
-					edit.mOriginalValue = phoneCursor
-							.getString(phoneNumberColumn);
+					edit.mPhoneId = cursor.getLong(phoneIdColumn);
+					edit.mOriginalValue = cursor.getString(phoneNumberColumn);
 					edit.mNewValue = mFormatter.cleanup(edit.mOriginalValue);
-					edit.mDisplayName = peopleCursor
-							.getString(displayNameColumn);
+					edit.mDisplayName = cursor.getString(displayNameColumn);
 					if (!edit.mNewValue.equals(edit.mOriginalValue)) {
 						adapter.add(edit);
 					}
-					break;
-				}
+				} while (cursor.moveToNext());
 			}
+			
 
 			Message message = new Message();
 			message.what = HANDLE_ADAPTER_READY;
@@ -192,10 +175,10 @@ public class PreviewActivity extends Activity implements OnClickListener,
 			for (int i = 0; i < mAdapter.getCount(); i++) {
 				Edit edit = mAdapter.getItem(i);
 				ContentResolver resolver = getContentResolver();
-				Uri uri = ContentUris.withAppendedId(
-						Contacts.Phones.CONTENT_URI, edit.mPhoneId);
+				Uri uri = ContentUris.withAppendedId(Phone.CONTENT_URI,
+						edit.mPhoneId);
 				ContentValues values = new ContentValues();
-				values.put(Contacts.PhonesColumns.NUMBER, edit.mNewValue);
+				values.put(Phone.NUMBER, edit.mNewValue);
 				String where = null;
 				String[] selectionArgs = null;
 				resolver.update(uri, values, where, selectionArgs);
