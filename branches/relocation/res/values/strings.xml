@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">Contacts Clean-up</string>
+	<string name="pref_area_code">area_code</string>
+	<string name="pref_country_code">country_code</string>
+	<string name="pref_format">format</string>
+	<string name="label_area_code">Area Code</string>
+	<string name="label_country_code">Country Code</string>
+	<string name="label_original">Original</string>
+	<string name="label_new">New</string>
+	<string name="label_format">Format</string>
+	<string name="format_dash">+XX-YYY-ZZZ-ZZZZ</string>
+	<string name="format_dot">+XX.YYY.ZZZ.ZZZZ</string>
+	<string name="format_space">+XX YYY ZZZ ZZZZ</string>
+	<string name="format_nopunc">+XXYYYZZZZZZZ</string>
+	<string name="button_preview">Preview</string>
+	<string name="button_apply">Apply</string>
+	<string name="button_cancel">Cancel</string>
+	<string name="data_loss_warning">
+		WARNING! This application makes large edits to your
+		contacts that cannot easily be undone. In some cases, there may be
+		errors synchronizing these changes with your Gmail contacts, which may
+		result in duplicate phone numbers or other types of errors. It is
+		strongly recommended that you make a back-up of your contacts using
+		the Export feature in Gmail before running this application.
+	</string>
+	<string name="error_invalid_country_code">Please enter a 1-digit country code.</string>
+	<string name="error_invalid_area_code">Please enter a 3-digit area code.</string>
+</resources>
