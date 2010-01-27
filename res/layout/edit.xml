@@ -1,29 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:layout_height="wrap_content"
-	android:orientation="vertical" android:padding="6dip">
-	<TextView android:id="@+id/display_name" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" />
-	<TableLayout android:layout_width="fill_parent"
-		android:layout_height="wrap_content">
-		<TableRow android:layout_width="fill_parent"
-			android:layout_height="wrap_content">
-			<TextView android:text="@string/label_original"
-				android:paddingRight="8dip" android:layout_width="wrap_content"
-				android:layout_height="wrap_content" android:layout_weight="0"
-				android:textAppearance="?android:attr/textAppearanceMedium" />
-			<TextView android:id="@+id/original_phone"
-				android:layout_width="wrap_content" android:layout_height="wrap_content"
-				android:layout_weight="1" android:textAppearance="?android:attr/textAppearanceLarge" />
-		</TableRow>
-		<TableRow android:layout_height="wrap_content"
-			android:layout_width="fill_parent">
-			<TextView android:text="@string/label_new"
-				android:paddingRight="8dip" android:layout_width="wrap_content"
-				android:layout_height="wrap_content" android:layout_weight="0"
-				android:textAppearance="?android:attr/textAppearanceMedium" />
-			<EditText android:id="@+id/new_phone" android:layout_width="wrap_content"
-				android:layout_height="wrap_content" android:layout_weight="1" android:inputType="text"/>
-		</TableRow>
-	</TableLayout>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="6dip">
+    <TextView
+        android:id="@+id/display_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="@string/label_original"
+                android:paddingRight="8dip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            <TextView
+                android:id="@+id/original_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+        </TableRow>
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent">
+            <TextView
+                android:text="@string/label_new"
+                android:paddingRight="8dip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            <EditText
+                android:id="@+id/new_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="phone" />
+        </TableRow>
+    </TableLayout>
 </LinearLayout>
