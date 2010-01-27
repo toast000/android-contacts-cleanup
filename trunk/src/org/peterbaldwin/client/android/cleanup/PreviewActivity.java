@@ -40,13 +40,9 @@ import android.widget.ListView;
 /**
  * An {@link Activity} to generate, preview, and apply changes.
  * 
- * TODO: generalize to non-phone fields
+ * TODO: Move all strings to strings.xml
  * 
- * TODO: move all strings to strings.xml
- * 
- * TODO: show contact name to help guess area code
- * 
- * TODO: debug missing button issue
+ * TODO: Smarter non-US phone number detection
  */
 public class PreviewActivity extends Activity implements OnClickListener,
 		DialogInterface.OnClickListener, DialogInterface.OnCancelListener,
