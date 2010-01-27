@@ -1,55 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:layout_height="fill_parent">
-	<LinearLayout android:orientation="vertical"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:padding="6dip">
-		<TextView android:text="@string/data_loss_warning"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:textAppearance="?android:attr/textAppearanceSmall"
-			android:paddingBottom="8dip" />
-		<TableLayout android:layout_width="fill_parent"
-			android:layout_height="wrap_content">
-			<TableRow android:layout_width="fill_parent"
-				android:layout_height="wrap_content">
-				<TextView android:id="@+id/CountryCodeLabel"
-					android:textAppearance="?android:attr/textAppearanceSmall"
-					android:layout_width="wrap_content" android:layout_height="wrap_content"
-					android:text="@string/label_country_code" android:paddingRight="8dip" />
-				<EditText android:id="@+id/CountryCodeText"
-					android:layout_width="wrap_content" android:layout_height="wrap_content"
-					android:minEms="3" android:inputType="number" />
-			</TableRow>
-			<TableRow android:layout_width="fill_parent"
-				android:layout_height="wrap_content">
-				<TextView android:id="@+id/AreaCodeLabel"
-					android:textAppearance="?android:attr/textAppearanceSmall"
-					android:layout_width="wrap_content" android:layout_height="wrap_content"
-					android:text="@string/label_area_code" android:paddingRight="8dip" />
-				<EditText android:id="@+id/AreaCodeText"
-					android:layout_width="wrap_content" android:layout_height="wrap_content"
-					android:minEms="3" android:inputType="number" />
-			</TableRow>
-			<TextView android:layout_width="wrap_content"
-				android:layout_height="wrap_content" android:text="@string/label_format" />
-			<RadioGroup android:id="@+id/group_format"
-				android:layout_width="wrap_content" android:layout_height="wrap_content">
-				<RadioButton android:id="@+id/format_space"
-					android:layout_width="wrap_content" android:layout_height="wrap_content"
-					android:text="@string/format_space" />
-				<RadioButton android:id="@+id/format_dash"
-					android:layout_width="wrap_content" android:layout_height="wrap_content"
-					android:text="@string/format_dash" />
-				<RadioButton android:id="@+id/format_dot"
-					android:layout_width="wrap_content" android:layout_height="wrap_content"
-					android:text="@string/format_dot" />
-				<RadioButton android:id="@+id/format_nopunc"
-					android:layout_width="wrap_content" android:layout_height="wrap_content"
-					android:text="@string/format_nopunc" />
-			</RadioGroup>
-		</TableLayout>
-		<Button android:id="@+id/PreviewButton" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:text="@string/button_preview"
-			android:layout_gravity="center" />
-	</LinearLayout>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="6dip">
+        <TextView
+            android:text="@string/data_loss_warning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:paddingBottom="8dip" />
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/CountryCodeLabel"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_country_code"
+                    android:paddingRight="8dip" />
+                <EditText
+                    android:id="@+id/CountryCodeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minEms="3"
+                    android:inputType="number" />
+            </TableRow>
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/AreaCodeLabel"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_area_code"
+                    android:paddingRight="8dip" />
+                <EditText
+                    android:id="@+id/AreaCodeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minEms="3"
+                    android:inputType="number" />
+            </TableRow>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_format" />
+            <RadioGroup
+                android:id="@+id/group_format"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <RadioButton
+                    android:id="@+id/format_space"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/format_space" />
+                <RadioButton
+                    android:id="@+id/format_dash"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/format_dash" />
+                <RadioButton
+                    android:id="@+id/format_dot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/format_dot" />
+                <RadioButton
+                    android:id="@+id/format_nopunc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/format_nopunc" />
+            </RadioGroup>
+        </TableLayout>
+        <Button
+            android:id="@+id/PreviewButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_preview"
+            android:layout_gravity="center" />
+    </LinearLayout>
 </ScrollView>
