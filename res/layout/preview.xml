@@ -11,9 +11,10 @@
         android:layout_height="wrap_content" />
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center">
+        android:gravity="center"
+        style="@android:style/ButtonBar">
         <Button
             android:id="@+id/ApplyButton"
             android:text="@string/button_apply"

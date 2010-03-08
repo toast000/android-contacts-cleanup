@@ -81,12 +81,19 @@
                     android:text="@string/format_nopunc" />
             </RadioGroup>
         </TableLayout>
-        <Button
-            android:id="@+id/PreviewButton"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/button_preview"
-            android:minEms="8"
-            android:layout_gravity="center" />
+            android:gravity="center"
+            style="@android:style/ButtonBar">
+            <Button
+                android:id="@+id/PreviewButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/button_preview"
+                android:minEms="8"
+                android:layout_gravity="center" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>
