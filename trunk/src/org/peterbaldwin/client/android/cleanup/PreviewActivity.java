@@ -81,18 +81,20 @@ public class PreviewActivity extends Activity implements OnClickListener,
 	private Handler mHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
-			switch (msg.what) {
-			case HANDLE_ADAPTER_READY:
-				mProgressDialog.dismiss();
-				setListAdapter((EditListAdapter) msg.obj);
-				break;
-			case HANDLE_UPDATE_COMPLETE:
-				mProgressDialog.incrementProgressBy(1);
-				break;
-			case HANDLE_ALL_UPDATES_COMPLETE:
-				mProgressDialog.dismiss();
-				finish();
-				break;
+			if (!isFinishing()) {
+				switch (msg.what) {
+				case HANDLE_ADAPTER_READY:
+					mProgressDialog.dismiss();
+					setListAdapter((EditListAdapter) msg.obj);
+					break;
+				case HANDLE_UPDATE_COMPLETE:
+					mProgressDialog.incrementProgressBy(1);
+					break;
+				case HANDLE_ALL_UPDATES_COMPLETE:
+					mProgressDialog.dismiss();
+					finish();
+					break;
+				}
 			}
 		}
 	};
@@ -220,6 +222,9 @@ public class PreviewActivity extends Activity implements OnClickListener,
 		mProgressDialog.setMessage("Updating phone numbers...");
 		mProgressDialog.setMax(mAdapter.getCount());
 		mProgressDialog.show();
+		
+		// TODO: Re-attach thread to new Activity instance
+		// if configuration changes.
 		new Thread(this).start();
 	}
 
