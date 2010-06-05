@@ -154,7 +154,7 @@ public class PreviewActivity extends Activity implements OnClickListener,
 			Uri uri = CONTENT_URI;
 			String[] projection = { COLUMN_ID, COLUMN_NUMBER,
 					COLUMN_DISPLAY_NAME };
-			String selection = null;
+			String selection = COLUMN_NUMBER + " IS NOT NULL";
 			String[] selectionArgs = null;
 			String sortOrder = SORT_ORDER;
 			Cursor cursor = managedQuery(uri, projection, selection,
