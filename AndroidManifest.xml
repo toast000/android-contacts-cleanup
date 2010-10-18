@@ -2,8 +2,8 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.peterbaldwin.client.android.cleanup"
-    android:versionName="1.2.2"
-    android:versionCode="17">
+    android:versionName="1.2.3"
+    android:versionCode="18">
     <uses-sdk
         android:minSdkVersion="4"
         android:targetSdkVersion="5" />
@@ -34,4 +34,6 @@
             android:name=".PreviewActivity"
             android:windowSoftInputMode="stateHidden" />
     </application>
+    <uses-feature
+        android:name="android.hardware.telephony.gsm" />
 </manifest> 
