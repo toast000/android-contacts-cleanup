@@ -46,7 +46,7 @@ import android.widget.ListView;
  */
 public class PreviewActivity extends Activity implements OnClickListener,
 		DialogInterface.OnClickListener, DialogInterface.OnCancelListener,
-		Runnable {
+		Runnable, Handler.Callback {
 
 	private static final int SDK = Integer.parseInt(Build.VERSION.SDK);
 	private static final boolean ECLAIR = SDK >= 5;
@@ -78,26 +78,7 @@ public class PreviewActivity extends Activity implements OnClickListener,
 	private ListView mListView;
 	private EditListAdapter mAdapter;
 
-	private Handler mHandler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-			if (!isFinishing()) {
-				switch (msg.what) {
-				case HANDLE_ADAPTER_READY:
-					mProgressDialog.dismiss();
-					setListAdapter((EditListAdapter) msg.obj);
-					break;
-				case HANDLE_UPDATE_COMPLETE:
-					mProgressDialog.incrementProgressBy(1);
-					break;
-				case HANDLE_ALL_UPDATES_COMPLETE:
-					mProgressDialog.dismiss();
-					finish();
-					break;
-				}
-			}
-		}
-	};
+	private Handler mHandler;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +90,7 @@ public class PreviewActivity extends Activity implements OnClickListener,
 		String separator = intent.getStringExtra(EXTRA_SEPARATOR);
 
 		mFormatter = new Formatter(countryCode, areaCode, separator);
+		mHandler = new Handler(this);
 
 		if (savedInstanceState != null && savedInstanceState.containsKey(EDITS)) {
 			Context context = this;
@@ -117,6 +99,32 @@ public class PreviewActivity extends Activity implements OnClickListener,
 			setListAdapter(EditListAdapter.fromArray(context, array));
 		} else {
 			loadContacts();
+		}
+	}
+	
+	@Override
+	public boolean handleMessage(Message msg) {
+		if (isFinishing()) {
+			return false;
+		}
+		switch (msg.what) {
+		case HANDLE_ADAPTER_READY:
+			if (mProgressDialog.isShowing()) {
+				mProgressDialog.dismiss();
+			}
+			setListAdapter((EditListAdapter) msg.obj);
+			return true;
+		case HANDLE_UPDATE_COMPLETE:
+			mProgressDialog.incrementProgressBy(1);
+			return true;
+		case HANDLE_ALL_UPDATES_COMPLETE:
+			if (mProgressDialog.isShowing()) {
+				mProgressDialog.dismiss();
+			}
+			finish();
+			return true;
+		default:
+			return false;
 		}
 	}
 
