@@ -18,6 +18,7 @@
 package org.peterbaldwin.client.android.cleanup;
 
 import android.content.Context;
+import android.os.Parcelable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,10 +67,10 @@ class EditListAdapter extends ArrayAdapter<Edit> {
 		return array;
 	}
 
-	public static EditListAdapter fromArray(Context context, Edit[] array) {
+	public static EditListAdapter fromArray(Context context, Parcelable[] array) {
 		EditListAdapter adapter = new EditListAdapter(context);
 		for (int i = 0; i < array.length; i++) {
-			adapter.add(array[i]);
+			adapter.add((Edit) array[i]);
 		}
 		return adapter;
 	}

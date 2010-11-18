@@ -32,6 +32,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -94,8 +95,7 @@ public class PreviewActivity extends Activity implements OnClickListener,
 
 		if (savedInstanceState != null && savedInstanceState.containsKey(EDITS)) {
 			Context context = this;
-			Edit[] array = (Edit[]) savedInstanceState
-					.getParcelableArray(EDITS);
+			Parcelable[] array = savedInstanceState.getParcelableArray(EDITS);
 			setListAdapter(EditListAdapter.fromArray(context, array));
 		} else {
 			loadContacts();
