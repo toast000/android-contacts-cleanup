@@ -45,6 +45,6 @@ class EditTextWatcher implements TextWatcher {
 
 	@Override
 	public void afterTextChanged(Editable s) {
-		edit.mNewValue = s.toString();
+		edit.formatted = s.toString();
 	}
 }

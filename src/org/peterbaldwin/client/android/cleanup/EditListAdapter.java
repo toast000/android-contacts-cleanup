@@ -47,9 +47,9 @@ class EditListAdapter extends ArrayAdapter<Edit> {
 		EditText editNewPhone = (EditText) view.findViewById(R.id.new_phone);
 
 		Edit edit = getItem(position);
-		textDisplayName.setText(edit.mDisplayName);
-		textOriginalPhone.setText(edit.mOriginalValue);
-		editNewPhone.setText(edit.mNewValue);
+		textDisplayName.setText(edit.displayName);
+		textOriginalPhone.setText(edit.original);
+		editNewPhone.setText(edit.formatted);
 
 		// Watch for changes
 		TextWatcher watcher = new EditTextWatcher(edit);
