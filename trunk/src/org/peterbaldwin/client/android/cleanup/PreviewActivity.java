@@ -177,12 +177,14 @@ public class PreviewActivity extends Activity implements OnClickListener,
 			if (cursor.moveToFirst()) {
 				do {
 					Edit edit = new Edit();
-					edit.mPhoneId = cursor.getLong(phoneIdColumn);
-					edit.mOriginalValue = cursor.getString(phoneNumberColumn);
-					edit.mNewValue = mFormatter.cleanup(edit.mOriginalValue);
-					edit.mDisplayName = cursor.getString(displayNameColumn);
-					if (!edit.mNewValue.equals(edit.mOriginalValue)) {
-						adapter.add(edit);
+					edit.phoneId = cursor.getLong(phoneIdColumn);
+					edit.displayName = cursor.getString(displayNameColumn);
+					edit.original = cursor.getString(phoneNumberColumn);
+					if (edit.original != null) {
+						edit.formatted = mFormatter.cleanup(edit.original);
+						if (!edit.formatted.equals(edit.original)) {
+							adapter.add(edit);
+						}
 					}
 				} while (cursor.moveToNext());
 			}
@@ -195,10 +197,10 @@ public class PreviewActivity extends Activity implements OnClickListener,
 			for (int i = 0; i < mAdapter.getCount(); i++) {
 				Edit edit = mAdapter.getItem(i);
 				ContentResolver resolver = getContentResolver();
-				long id = edit.mPhoneId;
+				long id = edit.phoneId;
 				Uri uri = ContentUris.withAppendedId(CONTENT_URI, id);
 				ContentValues values = new ContentValues();
-				values.put(COLUMN_NUMBER, edit.mNewValue);
+				values.put(COLUMN_NUMBER, edit.formatted);
 				String where = null;
 				String[] selectionArgs = null;
 				resolver.update(uri, values, where, selectionArgs);
